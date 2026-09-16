@@ -1,0 +1,38 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mva-identity}
+    username: ${SPRING_DATASOURCE_USERNAME:apple}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  flyway:
+    locations: classpath:db/migration
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+mva:
+  security:
+    jwt:
+      secret: ${MVA_JWT_SECRET:change-me-in-every-real-environment-this-is-local-dev-only}
+      ttl-minutes: 60
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
