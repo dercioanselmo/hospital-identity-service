@@ -1,6 +1,6 @@
-# identity-service
+# hospital-identity-service
 
-Owns users, roles, permissions, credentials, and JWT issuance for the MVA HMS platform. See `docs/security.md` and `docs/database-architecture.md`.
+Owns users, roles, permissions, credentials, and JWT issuance for the MVA HMS platform. See `hospital-platform-docs/docs/security.md` and `hospital-platform-docs/docs/database-architecture.md`.
 
 ## Prerequisites
 
