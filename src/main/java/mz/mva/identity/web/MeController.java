@@ -1,39 +1,47 @@
 package mz.mva.identity.web;
 
-import java.util.List;
+import jakarta.validation.Valid;
 import java.util.UUID;
-import mz.mva.identity.domain.User;
+import mz.mva.identity.dto.ChangePasswordRequest;
+import mz.mva.identity.dto.UpdateProfileRequest;
 import mz.mva.identity.dto.UserResponse;
-import mz.mva.identity.repository.UserRepository;
+import mz.mva.identity.service.MeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
+/** Self-service profile — any authenticated user, regardless of role. */
 @RestController
 public class MeController {
 
-    private final UserRepository userRepository;
+    private final MeService meService;
 
-    public MeController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public MeController(MeService meService) {
+        this.meService = meService;
     }
 
     @GetMapping("/me")
     public UserResponse me(Authentication authentication) {
-        UUID userId = UUID.fromString((String) authentication.getPrincipal());
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return meService.findSelf(subject(authentication));
+    }
 
-        List<String> roles = user.getRoles().stream().map(role -> role.getCode()).toList();
-        List<String> permissions = user.getRoles().stream()
-                .flatMap(role -> role.getPermissions().stream())
-                .map(permission -> permission.getCode())
-                .distinct()
-                .toList();
+    @PutMapping("/me")
+    public UserResponse updateMe(Authentication authentication, @Valid @RequestBody UpdateProfileRequest request) {
+        return meService.updateSelf(subject(authentication), request);
+    }
 
-        return new UserResponse(user.getId().toString(), user.getUsername(), user.getEmail(), roles, permissions);
+    @PostMapping("/me/change-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(Authentication authentication, @Valid @RequestBody ChangePasswordRequest request) {
+        meService.changePassword(subject(authentication), request);
+    }
+
+    private UUID subject(Authentication authentication) {
+        return UUID.fromString((String) authentication.getPrincipal());
     }
 }

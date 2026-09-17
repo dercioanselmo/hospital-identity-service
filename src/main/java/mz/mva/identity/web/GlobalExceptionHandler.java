@@ -43,6 +43,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", "Invalid request payload", request);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", ex.getMessage(), request);
+    }
+
     private ResponseEntity<ApiError> build(
             HttpStatus status, String error, String message, HttpServletRequest request) {
         ApiError body = new ApiError(Instant.now(), status.value(), error, message, request.getRequestURI());

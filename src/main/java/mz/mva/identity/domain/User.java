@@ -33,6 +33,15 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(name = "display_name")
+    private String displayName;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "profile_photo_data_url", columnDefinition = "TEXT")
+    private String profilePhotoDataUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status;
@@ -94,6 +103,38 @@ public class User {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getProfilePhotoDataUrl() {
+        return profilePhotoDataUrl;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setProfilePhotoDataUrl(String profilePhotoDataUrl) {
+        this.profilePhotoDataUrl = profilePhotoDataUrl;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public UserStatus getStatus() {
