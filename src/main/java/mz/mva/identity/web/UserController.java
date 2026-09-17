@@ -7,6 +7,7 @@ import mz.mva.identity.domain.UserStatus;
 import mz.mva.identity.dto.CreateUserRequest;
 import mz.mva.identity.dto.UpdateUserRolesRequest;
 import mz.mva.identity.dto.UserAdminDto;
+import mz.mva.identity.dto.UserRefDto;
 import mz.mva.identity.service.UserAdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +44,12 @@ public class UserController {
     @GetMapping("/{id}")
     public UserAdminDto findById(@PathVariable UUID id) {
         return userAdminService.findById(id);
+    }
+
+    /** Phase 8f (Notification-Amendment.md's role-wide broadcast) — used by hospital-notification-service's internal token. */
+    @GetMapping("/by-role/{roleCode}")
+    public List<UserRefDto> findByRole(@PathVariable String roleCode) {
+        return userAdminService.findByRole(roleCode);
     }
 
     @PostMapping

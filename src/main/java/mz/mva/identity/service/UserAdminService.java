@@ -9,6 +9,7 @@ import mz.mva.identity.domain.User;
 import mz.mva.identity.domain.UserStatus;
 import mz.mva.identity.dto.CreateUserRequest;
 import mz.mva.identity.dto.UserAdminDto;
+import mz.mva.identity.dto.UserRefDto;
 import mz.mva.identity.repository.RoleRepository;
 import mz.mva.identity.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +43,14 @@ public class UserAdminService {
     @Transactional(readOnly = true)
     public UserAdminDto findById(UUID id) {
         return UserAdminDto.from(getOrThrow(id));
+    }
+
+    /** Phase 8f: every active user with a given role, for hospital-notification-service's role-broadcast resolver. */
+    @Transactional(readOnly = true)
+    public List<UserRefDto> findByRole(String roleCode) {
+        return userRepository.findByRoleCodeAndStatus(roleCode, UserStatus.ACTIVE).stream()
+                .map(UserRefDto::from)
+                .toList();
     }
 
     @Transactional

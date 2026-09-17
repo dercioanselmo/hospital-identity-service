@@ -90,4 +90,15 @@ class UserAdminServiceTest {
 
         assertThat(result.roles()).containsExactly("DOCTOR");
     }
+
+    @Test
+    void findByRoleReturnsOnlyActiveUsersWithThatRole() {
+        User active = new User(UUID.randomUUID(), "joao", "joao@mva.local", "h", UserStatus.ACTIVE);
+        when(userRepository.findByRoleCodeAndStatus("STORE_KEEPER", UserStatus.ACTIVE)).thenReturn(List.of(active));
+
+        var result = service.findByRole("STORE_KEEPER");
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).username()).isEqualTo("joao");
+    }
 }
